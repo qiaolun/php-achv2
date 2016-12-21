@@ -541,7 +541,7 @@ $data = array(
 );
 
 $data_len = count($data);
-for ($loop = 0; $loop < 1000; $loop++) {
+for ($loop = 0; $loop < 500; $loop++) {
     $rand_rows = mt_rand(1, $data_len);
     shuffle($data);
 
