@@ -33,27 +33,27 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_achv2_encode, 0, 0, 1)
 ZEND_END_ARG_INFO()
 
 const zend_function_entry achv2_functions[] = {
-	PHP_FE(achv2_decode, arginfo_achv2_encode)
-	PHP_FE_END
+    PHP_FE(achv2_decode, arginfo_achv2_encode)
+    PHP_FE_END
 };
 
 /* {{{ achv2_module_entry
  */
 zend_module_entry achv2_module_entry = {
 #if ZEND_MODULE_API_NO >= 20010901
-	STANDARD_MODULE_HEADER,
+    STANDARD_MODULE_HEADER,
 #endif
-	"achv2",
-	achv2_functions,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	PHP_MINFO(achv2),
+    "achv2",
+    achv2_functions,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    PHP_MINFO(achv2),
 #if ZEND_MODULE_API_NO >= 20010901
-	PHP_ACHV2_VERSION,
+    PHP_ACHV2_VERSION,
 #endif
-	STANDARD_MODULE_PROPERTIES
+    STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 
@@ -65,50 +65,50 @@ ZEND_GET_MODULE(achv2)
  */
 PHP_MINFO_FUNCTION(achv2)
 {
-	php_info_print_table_start();
-	php_info_print_table_header(2, "achv2 support", "enabled");
-	php_info_print_table_end();
+    php_info_print_table_start();
+    php_info_print_table_header(2, "achv2 support", "enabled");
+    php_info_print_table_end();
 }
 /* }}} */
 
 PHP_FUNCTION(achv2_decode) {
     const char *raw;
-    int raw_size;
-	int offset;
-	char buf[64];
-	
+    char buf[11];
+    int raw_size, offset;
+    long store, finish, step, mark, id;
+    zval *data;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &raw, &raw_size) == FAILURE) {
-		return;
-	}
+        return;
+    }
 
-	if (raw_size < 10) {
-		return;
-	}
-       
-	array_init(return_value);
+    if (raw_size < 10) {
+        return;
+    }
 
-	for (offset = 0; offset < raw_size; offset += 10) {	
+    array_init_size(return_value, 8191);
 
-		memcpy(buf, raw + offset, 10);
-		buf[11] = 0;
+    for (offset = 0; offset < raw_size; offset += 10) {
 
-		long store = strtol(buf, NULL, 16);
-        long finish = store & 0x0000000001;
-        long step = (store & 0x000000001e) >> 1 ; 
-        long mark = (store & 0x001ffffe0) >> 5 ; 
-        long id = store >> 25; 
+        memcpy(buf, raw + offset, 10);
 
-		zval *data;
-		MAKE_STD_ZVAL(data);
-		object_init(data);
+        store = strtol(buf, NULL, 16);
+        finish = store & 0x0000000001;
+        step = (store & 0x000000001e) >> 1 ;
+        mark = (store & 0x001ffffe0) >> 5 ;
+        id = store >> 25;
 
-		add_property_long(data, "finish", finish);
-		add_property_long(data, "mark", mark);
-		add_property_long(data, "step", step);
-		add_property_long(data, "start", offset);
+        MAKE_STD_ZVAL(data);
+        array_init(data);
 
-		add_index_zval(return_value, id, data);
-	}
+        add_assoc_long_ex(data, "finish", 7, finish);
+        add_assoc_long_ex(data, "mark", 5, mark);
+        add_assoc_long_ex(data, "step", 5, step);
+        add_assoc_long_ex(data, "start", 6, offset);
+
+        object_and_properties_init(data, ZEND_STANDARD_CLASS_DEF_PTR, Z_ARRVAL_P(data));
+
+        add_index_zval(return_value, id, data);
+    }
 
 }
