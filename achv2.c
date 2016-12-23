@@ -76,7 +76,8 @@ PHP_FUNCTION(achv2_decode) {
     char buf[11];
     int raw_size, offset;
     long store, finish, step, mark, id;
-    zval *data;
+    ulong hash_finish, hash_step, hash_mark, hash_offset;
+    zval *data, *tmp;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &raw, &raw_size) == FAILURE) {
         return;
@@ -86,7 +87,12 @@ PHP_FUNCTION(achv2_decode) {
         return;
     }
 
-    array_init_size(return_value, 8191);
+    hash_finish = zend_get_hash_value("finish", 6);
+    hash_step = zend_get_hash_value("step", 4);
+    hash_mark = zend_get_hash_value("mark", 4);
+    hash_offset = zend_get_hash_value("offset", 6);
+
+    array_init_size(return_value, 8192);
 
     for (offset = 0; offset < raw_size; offset += 10) {
 
@@ -101,10 +107,21 @@ PHP_FUNCTION(achv2_decode) {
         MAKE_STD_ZVAL(data);
         array_init_size(data, 4);
 
-        add_assoc_long_ex(data, "finish", 7, finish);
-        add_assoc_long_ex(data, "mark", 5, mark);
-        add_assoc_long_ex(data, "step", 5, step);
-        add_assoc_long_ex(data, "start", 6, offset);
+        MAKE_STD_ZVAL(tmp);
+        ZVAL_LONG(tmp, finish);
+        zend_hash_quick_update(Z_ARRVAL_P(data), "finish", 7, hash_finish, (void *)&tmp, sizeof(zval *), NULL);
+
+        MAKE_STD_ZVAL(tmp);
+        ZVAL_LONG(tmp, step);
+        zend_hash_quick_update(Z_ARRVAL_P(data), "step", 5, hash_step, (void *)&tmp, sizeof(zval *), NULL);
+
+        MAKE_STD_ZVAL(tmp);
+        ZVAL_LONG(tmp, mark);
+        zend_hash_quick_update(Z_ARRVAL_P(data), "mark", 5, hash_mark, (void *)&tmp, sizeof(zval *), NULL);
+
+        MAKE_STD_ZVAL(tmp);
+        ZVAL_LONG(tmp, offset);
+        zend_hash_quick_update(Z_ARRVAL_P(data), "start", 6, hash_offset, (void *)&tmp, sizeof(zval *), NULL);
 
         object_and_properties_init(data, ZEND_STANDARD_CLASS_DEF_PTR, Z_ARRVAL_P(data));
 
