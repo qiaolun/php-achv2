@@ -90,7 +90,7 @@ PHP_FUNCTION(achv2_decode) {
     hash_finish = zend_get_hash_value("finish", 6);
     hash_step = zend_get_hash_value("step", 4);
     hash_mark = zend_get_hash_value("mark", 4);
-    hash_offset = zend_get_hash_value("offset", 6);
+    hash_offset = zend_get_hash_value("start", 5);
 
     array_init_size(return_value, 8192);
 
