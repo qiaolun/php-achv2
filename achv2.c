@@ -99,7 +99,7 @@ PHP_FUNCTION(achv2_decode) {
         id = store >> 25;
 
         MAKE_STD_ZVAL(data);
-        array_init(data);
+        array_init_size(data, 4);
 
         add_assoc_long_ex(data, "finish", 7, finish);
         add_assoc_long_ex(data, "mark", 5, mark);
