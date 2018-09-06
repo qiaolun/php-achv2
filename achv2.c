@@ -91,6 +91,8 @@ PHP_FUNCTION(achv2_decode) {
         return;
     }
 
+    memset(buf, 0, 11);
+
     hash_finish = zend_get_hash_value(FINISH, sizeof(FINISH));
     hash_step = zend_get_hash_value(STEP, sizeof(STEP));
     hash_mark = zend_get_hash_value(MARK, sizeof(MARK));
