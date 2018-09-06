@@ -12,10 +12,10 @@ array(9) {
   object(stdClass)#1 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(901)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(901)
     ["start"]=>
     int(0)
   }
@@ -23,10 +23,10 @@ array(9) {
   object(stdClass)#2 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(10000)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(10000)
     ["start"]=>
     int(10)
   }
@@ -34,10 +34,10 @@ array(9) {
   object(stdClass)#3 (4) {
     ["finish"]=>
     int(0)
-    ["mark"]=>
-    int(566)
     ["step"]=>
     int(3)
+    ["mark"]=>
+    int(566)
     ["start"]=>
     int(20)
   }
@@ -45,10 +45,10 @@ array(9) {
   object(stdClass)#4 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(960)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(960)
     ["start"]=>
     int(30)
   }
@@ -56,10 +56,10 @@ array(9) {
   object(stdClass)#5 (4) {
     ["finish"]=>
     int(0)
-    ["mark"]=>
-    int(394)
     ["step"]=>
     int(4)
+    ["mark"]=>
+    int(394)
     ["start"]=>
     int(40)
   }
@@ -67,10 +67,10 @@ array(9) {
   object(stdClass)#6 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(960)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(960)
     ["start"]=>
     int(50)
   }
@@ -78,10 +78,10 @@ array(9) {
   object(stdClass)#7 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(1000)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(1000)
     ["start"]=>
     int(60)
   }
@@ -89,10 +89,10 @@ array(9) {
   object(stdClass)#8 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(960)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(960)
     ["start"]=>
     int(70)
   }
@@ -100,10 +100,10 @@ array(9) {
   object(stdClass)#9 (4) {
     ["finish"]=>
     int(1)
-    ["mark"]=>
-    int(960)
     ["step"]=>
     int(5)
+    ["mark"]=>
+    int(960)
     ["start"]=>
     int(80)
   }

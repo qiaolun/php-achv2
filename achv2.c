@@ -27,6 +27,10 @@
 #include "ext/standard/info.h"
 #include "php_achv2.h"
 
+#define FINISH "finish"
+#define STEP "step"
+#define MARK "mark"
+#define START "start"
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_achv2_encode, 0, 0, 1)
     ZEND_ARG_INFO(0, value)
@@ -87,12 +91,12 @@ PHP_FUNCTION(achv2_decode) {
         return;
     }
 
-    hash_finish = zend_get_hash_value("finish", 6);
-    hash_step = zend_get_hash_value("step", 4);
-    hash_mark = zend_get_hash_value("mark", 4);
-    hash_offset = zend_get_hash_value("start", 5);
+    hash_finish = zend_get_hash_value(FINISH, sizeof(FINISH));
+    hash_step = zend_get_hash_value(STEP, sizeof(STEP));
+    hash_mark = zend_get_hash_value(MARK, sizeof(MARK));
+    hash_offset = zend_get_hash_value(START, sizeof(START));
 
-    array_init_size(return_value, 8192);
+    array_init_size(return_value, raw_size / 10 + 1);
 
     for (offset = 0; offset < raw_size; offset += 10) {
 
@@ -109,19 +113,19 @@ PHP_FUNCTION(achv2_decode) {
 
         MAKE_STD_ZVAL(tmp);
         ZVAL_LONG(tmp, finish);
-        zend_hash_quick_update(Z_ARRVAL_P(data), "finish", 7, hash_finish, (void *)&tmp, sizeof(zval *), NULL);
+        zend_hash_quick_update(Z_ARRVAL_P(data), FINISH, sizeof(FINISH), hash_finish, (void *)&tmp, sizeof(zval *), NULL);
 
         MAKE_STD_ZVAL(tmp);
         ZVAL_LONG(tmp, step);
-        zend_hash_quick_update(Z_ARRVAL_P(data), "step", 5, hash_step, (void *)&tmp, sizeof(zval *), NULL);
+        zend_hash_quick_update(Z_ARRVAL_P(data), STEP, sizeof(STEP), hash_step, (void *)&tmp, sizeof(zval *), NULL);
 
         MAKE_STD_ZVAL(tmp);
         ZVAL_LONG(tmp, mark);
-        zend_hash_quick_update(Z_ARRVAL_P(data), "mark", 5, hash_mark, (void *)&tmp, sizeof(zval *), NULL);
+        zend_hash_quick_update(Z_ARRVAL_P(data), MARK, sizeof(MARK), hash_mark, (void *)&tmp, sizeof(zval *), NULL);
 
         MAKE_STD_ZVAL(tmp);
         ZVAL_LONG(tmp, offset);
-        zend_hash_quick_update(Z_ARRVAL_P(data), "start", 6, hash_offset, (void *)&tmp, sizeof(zval *), NULL);
+        zend_hash_quick_update(Z_ARRVAL_P(data), START, sizeof(START), hash_offset, (void *)&tmp, sizeof(zval *), NULL);
 
         object_and_properties_init(data, ZEND_STANDARD_CLASS_DEF_PTR, Z_ARRVAL_P(data));
 

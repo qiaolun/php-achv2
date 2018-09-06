@@ -5,6 +5,8 @@ decode test
 --FILE--
 <?php 
 
+ini_set('memory_limit', '8M');
+
 $data = array(
 '000207D00B0004052D0B000603200B000802968B000A01900B000C1F400B000E0FA00B001003200B',
 '001201F40B0014052D0B001603E80B001802710B001A02710B001C055F0B001E01F40B002002C88B',
@@ -549,6 +551,7 @@ for ($loop = 0; $loop < 500; $loop++) {
     $line = implode('', $tests);
 
     $v = achv2_decode($line);
+    unset($v);
 }
 
 ?>
