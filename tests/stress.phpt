@@ -542,6 +542,11 @@ $data = array(
 '25A8000280244C0005C210AC0006E419C6000182270A0000C0259C000BC2249E000180292A002D42',
 );
 
+function decode($line) {
+    $v = achv2_decode($line);
+    // unset($v);
+}
+
 $data_len = count($data);
 for ($loop = 0; $loop < 500; $loop++) {
     $rand_rows = mt_rand(1, $data_len);
@@ -550,8 +555,7 @@ for ($loop = 0; $loop < 500; $loop++) {
     $tests = array_slice($data, 0, $rand_rows);
     $line = implode('', $tests);
 
-    $v = achv2_decode($line);
-    unset($v);
+    decode($line);
 }
 
 ?>
