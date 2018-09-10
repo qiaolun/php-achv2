@@ -94,8 +94,8 @@ PHP_FUNCTION(achv2_decode) {
     memset(buf, 0, 11);
 
     hash_finish = zend_get_hash_value(FINISH, sizeof(FINISH));
-    hash_step = zend_get_hash_value(STEP, sizeof(STEP));
     hash_mark = zend_get_hash_value(MARK, sizeof(MARK));
+    hash_step = zend_get_hash_value(STEP, sizeof(STEP));
     hash_offset = zend_get_hash_value(START, sizeof(START));
 
     array_init_size(return_value, raw_size / 10 + 10);
@@ -118,12 +118,12 @@ PHP_FUNCTION(achv2_decode) {
         zend_hash_quick_update(Z_ARRVAL_P(data), FINISH, sizeof(FINISH), hash_finish, (void *)&tmp, sizeof(zval *), NULL);
 
         MAKE_STD_ZVAL(tmp);
-        ZVAL_LONG(tmp, step);
-        zend_hash_quick_update(Z_ARRVAL_P(data), STEP, sizeof(STEP), hash_step, (void *)&tmp, sizeof(zval *), NULL);
-
-        MAKE_STD_ZVAL(tmp);
         ZVAL_LONG(tmp, mark);
         zend_hash_quick_update(Z_ARRVAL_P(data), MARK, sizeof(MARK), hash_mark, (void *)&tmp, sizeof(zval *), NULL);
+
+        MAKE_STD_ZVAL(tmp);
+        ZVAL_LONG(tmp, step);
+        zend_hash_quick_update(Z_ARRVAL_P(data), STEP, sizeof(STEP), hash_step, (void *)&tmp, sizeof(zval *), NULL);
 
         MAKE_STD_ZVAL(tmp);
         ZVAL_LONG(tmp, offset);
