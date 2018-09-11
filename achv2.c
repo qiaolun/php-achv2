@@ -110,6 +110,14 @@ PHP_FUNCTION(achv2_decode) {
         mark = (store & 0x001ffffe0) >> 5 ;
         id = store >> 25;
 
+        if (id < 0 || id > 99999) {
+            php_error_docref(NULL TSRMLS_CC, E_WARNING, "invalid id %d", id);
+        }
+
+        if (step > 5) {
+            php_error_docref(NULL TSRMLS_CC, E_WARNING, "invalid step %d", step);
+        }
+
         MAKE_STD_ZVAL(data);
         array_init_size(data, 4);
 
