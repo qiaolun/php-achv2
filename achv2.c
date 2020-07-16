@@ -32,31 +32,31 @@
 #define MARK "mark"
 #define START "start"
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_achv2_encode, 0, 0, 1)
+static PHP_MINFO_FUNCTION(achv2);
+ 
+PHP_FUNCTION(achv2_decode);
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_achv2_decode, 0, 0, 1)
     ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
-const zend_function_entry achv2_functions[] = {
-    PHP_FE(achv2_decode, arginfo_achv2_encode)
+static zend_function_entry achv2_functions[] = {
+    PHP_FE(achv2_decode, arginfo_achv2_decode)
     PHP_FE_END
 };
 
 /* {{{ achv2_module_entry
  */
 zend_module_entry achv2_module_entry = {
-#if ZEND_MODULE_API_NO >= 20010901
     STANDARD_MODULE_HEADER,
-#endif
     "achv2",
     achv2_functions,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    0,
+    0,
+    0,
+    0,
     PHP_MINFO(achv2),
-#if ZEND_MODULE_API_NO >= 20010901
     PHP_ACHV2_VERSION,
-#endif
     STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
@@ -78,12 +78,11 @@ PHP_MINFO_FUNCTION(achv2)
 PHP_FUNCTION(achv2_decode) {
     const char *raw;
     char buf[11];
-    int raw_size, offset;
+    size_t raw_size, offset;
     long store, finish, step, mark, id;
-    ulong hash_finish, hash_step, hash_mark, hash_offset;
-    zval *data, *tmp;
+    zend_string *key_finish, *key_mark, *key_step, *key_start;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &raw, &raw_size) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &raw, &raw_size) == FAILURE) {
         return;
     }
 
@@ -93,14 +92,15 @@ PHP_FUNCTION(achv2_decode) {
 
     memset(buf, 0, 11);
 
-    hash_finish = zend_get_hash_value(FINISH, sizeof(FINISH));
-    hash_mark = zend_get_hash_value(MARK, sizeof(MARK));
-    hash_step = zend_get_hash_value(STEP, sizeof(STEP));
-    hash_offset = zend_get_hash_value(START, sizeof(START));
+    key_finish = zend_string_init(FINISH, sizeof(FINISH)-1, 0);
+    key_mark = zend_string_init(MARK, sizeof(MARK)-1, 0);
+    key_step = zend_string_init(STEP, sizeof(STEP)-1, 0);
+    key_start = zend_string_init(START, sizeof(START)-1, 0);
 
     array_init_size(return_value, raw_size / 10 + 10);
 
     for (offset = 0; offset < raw_size; offset += 10) {
+        zval row, z_finish, z_mark, z_step, z_start;
 
         memcpy(buf, raw + offset, 10);
 
@@ -111,35 +111,34 @@ PHP_FUNCTION(achv2_decode) {
         id = store >> 25;
 
         if (id < 0 || id > 99999) {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "invalid id %d", id);
+            php_error_docref(NULL, E_WARNING, "invalid id %d", id);
         }
 
         if (step > 5) {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "invalid step %d", step);
+            php_error_docref(NULL, E_WARNING, "invalid step %d", step);
         }
 
-        MAKE_STD_ZVAL(data);
-        array_init_size(data, 4);
+        array_init_size(&row, 4);
 
-        MAKE_STD_ZVAL(tmp);
-        ZVAL_LONG(tmp, finish);
-        zend_hash_quick_update(Z_ARRVAL_P(data), FINISH, sizeof(FINISH), hash_finish, (void *)&tmp, sizeof(zval *), NULL);
+        ZVAL_LONG(&z_finish, finish);
+        zend_hash_add(HASH_OF(&row), key_finish, &z_finish);
 
-        MAKE_STD_ZVAL(tmp);
-        ZVAL_LONG(tmp, mark);
-        zend_hash_quick_update(Z_ARRVAL_P(data), MARK, sizeof(MARK), hash_mark, (void *)&tmp, sizeof(zval *), NULL);
+        ZVAL_LONG(&z_mark, mark);
+        zend_hash_add(HASH_OF(&row), key_mark, &z_mark);
 
-        MAKE_STD_ZVAL(tmp);
-        ZVAL_LONG(tmp, step);
-        zend_hash_quick_update(Z_ARRVAL_P(data), STEP, sizeof(STEP), hash_step, (void *)&tmp, sizeof(zval *), NULL);
+        ZVAL_LONG(&z_step, step);
+        zend_hash_add(HASH_OF(&row), key_step, &z_step);
 
-        MAKE_STD_ZVAL(tmp);
-        ZVAL_LONG(tmp, offset);
-        zend_hash_quick_update(Z_ARRVAL_P(data), START, sizeof(START), hash_offset, (void *)&tmp, sizeof(zval *), NULL);
+        ZVAL_LONG(&z_start, offset);
+        zend_hash_add(HASH_OF(&row), key_start, &z_start);
 
-        object_and_properties_init(data, ZEND_STANDARD_CLASS_DEF_PTR, Z_ARRVAL_P(data));
+        object_and_properties_init(&row, ZEND_STANDARD_CLASS_DEF_PTR, HASH_OF(&row));
 
-        add_index_zval(return_value, id, data);
+        zend_hash_index_add(HASH_OF(return_value), id, &row);
     }
 
+    zend_string_release(key_finish);
+    zend_string_release(key_mark);
+    zend_string_release(key_step);
+    zend_string_release(key_start);
 }
