@@ -19,6 +19,7 @@ config.nice
 config.status
 config.sub
 configure
+configure.ac
 configure.in
 conftest
 conftest.c
