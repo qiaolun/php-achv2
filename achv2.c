@@ -134,7 +134,7 @@ PHP_FUNCTION(achv2_decode) {
 
         object_and_properties_init(&row, ZEND_STANDARD_CLASS_DEF_PTR, HASH_OF(&row));
 
-        zend_hash_index_add(HASH_OF(return_value), id, &row);
+        zend_hash_index_update(HASH_OF(return_value), id, &row);
     }
 
     zend_string_release(key_finish);
