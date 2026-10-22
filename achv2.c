@@ -99,7 +99,7 @@ PHP_FUNCTION(achv2_decode) {
 
     array_init_size(return_value, raw_size / 10 + 10);
 
-    for (offset = 0; offset < raw_size; offset += 10) {
+    for (offset = 0; raw_size - offset >= 10; offset += 10) {
         zval row, z_finish, z_mark, z_step, z_start;
 
         memcpy(buf, raw + offset, 10);
@@ -111,11 +111,11 @@ PHP_FUNCTION(achv2_decode) {
         id = store >> 25;
 
         if (id < 0 || id > 99999) {
-            php_error_docref(NULL, E_WARNING, "invalid id %d", id);
+            php_error_docref(NULL, E_WARNING, "invalid id %ld", id);
         }
 
         if (step > 5) {
-            php_error_docref(NULL, E_WARNING, "invalid step %d", step);
+            php_error_docref(NULL, E_WARNING, "invalid step %ld", step);
         }
 
         array_init_size(&row, 4);
