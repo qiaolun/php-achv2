@@ -70,7 +70,9 @@ ZEND_GET_MODULE(achv2)
 PHP_MINFO_FUNCTION(achv2)
 {
     php_info_print_table_start();
-    php_info_print_table_header(2, "achv2 support", "enabled");
+    php_info_print_table_row(2, "achv2 support", "enabled");
+    php_info_print_table_row(2, "achv2 version", PHP_ACHV2_VERSION);
+    php_info_print_table_row(2, "achv2 revision", "$Id$");
     php_info_print_table_end();
 }
 /* }}} */
